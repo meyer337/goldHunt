@@ -286,7 +286,7 @@ def inGold(click,goldball):
 
     
 def sortScore(List):
-    return List[1]
+    return int(List[1])
 
 
 def topScore(win):
@@ -303,12 +303,14 @@ def topScore(win):
             
             
         try:
-            topscoreList.append([score[0],score[1][:-1]])
+            score[1] = score[1].replace("\n","")
+            topscoreList.append((score[0],score[1]))
             i = i+1
         except:
             pass
 
-    topscoreList.sort(key=sortScore)        
+    topscoreList.sort(key=sortScore)
+    print(topscoreList)
     try:
         topscoreList = topscoreList[0:3]
     
@@ -318,7 +320,12 @@ def topScore(win):
     return topscoreList
 
 
-
+def TimeBar(lenth):
+    aRectangle = Rectangle(Point(10,60),Point(10+lenth,90))
+    aRectangle.setFill("red")
+    aRectangle.setOutline("red")
+    return aRectangle
+    
 
 
 
@@ -487,7 +494,7 @@ def main():
                     sleep(0.1)
 
                     click = GameWin.checkMouse()
-                    if inGold(click,balls[gi][gj][0]):
+                    if inGold(click,balls[gi][gj][0]) and ClickCount>=0 :
                         ClickCount = ClickCount - 1
                         score = scoreTittle(GameWin,score,ClickCount)
                     
@@ -496,9 +503,50 @@ def main():
                 WashBalls(balls)
                 balls[gi][gj][0].undraw()
 
+#In This part, we add a feature, which user need to click to keep the ball from falling for a short time
+#If the ball drop out, will be a 10 step punishment.
+                if situation != 2 and situation != 3:
+                    break
+                
+                bubble = Circle(Point(GameWin.getWidth()/2,50),30)
+                bubble.setFill('gold')
+                bubble.setOutline('gold')
+                bubble.draw(GameWin)
+                dy = 0
+                Timebar = None
+                lenth = 1
+                aline = Line(Point(400,60), Point(400,90))
+                aline.setOutline("black")
+                aline.draw(GameWin)
+                while bubble.getCenter().getY() < 550:
+                    
+                    situation = Control(Control_panel[0],Control_panel[1])
+                    if situation != 2 and situation != 3:
+                        break
+                    
+                    try:
+                        Timebar.undraw()
+                    except:
+                        pass
+                    lenth += 0.01
+                    Timebar = TimeBar(lenth)
+                    Timebar.draw(GameWin)
 
-
-
+                    if lenth>390:
+                        break
+                    click = GameWin.checkMouse()
+                    dy = dy + 0.000045
+                    bubble.move(0,dy)
+                    if inGold(click,bubble):
+                        dy = -0.01
+                if bubble.getCenter().getY() >= 550:
+                    ClickCount = ClickCount + 10
+                    score = scoreTittle(GameWin,score,ClickCount)
+                    
+                aline.undraw()
+                Timebar.undraw()
+                bubble.undraw()
+                
 
                 
 # show the congratulation to the user at the end of each round                    
