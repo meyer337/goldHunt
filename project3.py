@@ -7,7 +7,7 @@
 from time import sleep
 from graphics import *
 import random
-
+import winsound
 #DrawControl function is used to draw a control panel, which will return the control panel and user's name box
 def drawControl():
     win = GraphWin("Game Control", 250,400)
@@ -99,6 +99,10 @@ def Control(win,name):
 def GameBackground():
     win = GraphWin("GoldHunt", 480,520,autoflush = True)
     win.setBackground("white")
+    
+    myImage = Image(Point(240,260), 'gold.gif')
+    myImage.draw(win)
+    
     tittleBox = Rectangle(Point(0,0),Point(480,40))
     tittleBox.setFill("Black")
     tittleBox.draw(win)
@@ -119,6 +123,8 @@ def GameBackground():
     ClickTittle.draw(win)
     ClickTittle.setStyle("bold")
 
+    
+    
 #Round, Clicks and GoldHunt Graphics window objects
     return [win,tittleBox,ClickTittle]
 
@@ -199,6 +205,7 @@ def ClickCheck(click,balls):
                 bx,by = balls[i][j][0].getCenter().getX(), balls[i][j][0].getCenter().getY()
                 cx,cy = click.getX(),click.getY()
                 if ((bx-cx)**2+(by-cy)**2)**.5 < 15:
+                    winsound.PlaySound("TAP1.WAV", winsound.SND_ASYNC)
                     return [i,j]
     except: pass
     return -1
@@ -433,6 +440,7 @@ def main():
                         color = balls[ClickedBall[0]][ClickedBall[1]][1]
                         if balls[ClickedBall[0]][ClickedBall[1]][0] not in clicked:
                             if balls[ClickedBall[0]][ClickedBall[1]][1] == "red":
+                                winsound.PlaySound("bomb.WAV", winsound.SND_ASYNC)
                                 ClickCount = ClickCount +5
                             else:
                                 ClickCount = ClickCount +1
@@ -448,7 +456,8 @@ def main():
                         break
                 clicked = []
 # This nest loop will let all ball objects to drop at the end of each round                    
-                if situation == 2 or situation == 3:    
+                if situation == 2 or situation == 3:
+                    winsound.PlaySound("coin_2.WAV", winsound.SND_ASYNC)
                     while balls[0][14][0].getCenter().getY() < 550:
                         for i in range (15):
                             for j in range(15):
